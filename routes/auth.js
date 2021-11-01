@@ -14,6 +14,19 @@ const ExpressError = require("../expressError");
  *
  **/
 
+router.post("/login", async (req, res, next) => {
+	try {
+		let { username, password } = req.body;
+		if (await User.authenticate(username, password)) {
+			User.updateLoginTimestamp(username);
+			let token = jwt.sign({ username }, SECRET_KEY);
+			return res.json({ token });
+		}
+	} catch (e) {
+		next(e);
+	}
+});
+
 /** POST /register - register user: registers, logs in, and returns token.
  *
  * {username, password, first_name, last_name, phone} => {token}.
