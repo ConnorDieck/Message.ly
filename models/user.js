@@ -20,15 +20,15 @@ class User {
 		// save to db
 		const results = await db.query(
 			`INSERT INTO users (
-        username, 
-        password, 
-        first_name,
-        last_name,
-        phone,
-        join_at,
-        last_login_at)
-      VALUES ($1, $2, $3, $4, $5, current_timestamp, current_timestamp)
-      RETURNING username, password, first_name, last_name, phone
+				username, 
+				password, 
+				first_name,
+				last_name,
+				phone,
+				join_at,
+				last_login_at)
+			VALUES ($1, $2, $3, $4, $5, current_timestamp, current_timestamp)
+			RETURNING username, password, first_name, last_name, phone
     `,
 			[username, hashedPw, first_name, last_name, phone]
 		);
@@ -41,8 +41,8 @@ class User {
 	static async authenticate(username, password) {
 		const results = await db.query(
 			`SELECT username, password
-      FROM users
-      WHERE username=$1`,
+      		FROM users
+      		WHERE username=$1`,
 			[username]
 		);
 
@@ -60,9 +60,9 @@ class User {
 	static async updateLoginTimestamp(username) {
 		const result = await db.query(
 			`UPDATE users
-      SET last_login_at = current_timestamp
-      WHERE username = $1
-      RETURNING username`,
+			SET last_login_at = current_timestamp
+			WHERE username = $1
+			RETURNING username`,
 			[username]
 		);
 
@@ -76,9 +76,9 @@ class User {
 
 	static async all() {
 		const results = await db.query(`
-      SELECT username, first_name, last_name, phone
-      FROM users
-      ORDER BY username`);
+			SELECT username, first_name, last_name, phone
+			FROM users
+			ORDER BY username`);
 
 		return results.rows;
 	}
@@ -95,8 +95,8 @@ class User {
 	static async get(username) {
 		const results = await db.query(
 			`SELECT username, first_name, last_name, phone, join_at, last_login_at
-      FROM users
-      WHERE username = $1`,
+			FROM users
+			WHERE username = $1`,
 			[username]
 		);
 
@@ -118,16 +118,16 @@ class User {
 	static async messagesFrom(username) {
 		const results = await db.query(
 			`SELECT m.id, 
-       m.to_username, 
-       u.first_name, 
-       u.last_name, 
-       u.phone, 
-       m.body, 
-       m.sent_at, 
-       m.read_at
-      FROM messages AS m
-        JOIN users AS u ON m.to_username = u.username
-      WHERE from_username = $1`,
+			m.to_username, 
+			u.first_name, 
+			u.last_name, 
+			u.phone, 
+			m.body, 
+			m.sent_at, 
+			m.read_at
+			FROM messages AS m
+				JOIN users AS u ON m.to_username = u.username
+			WHERE from_username = $1`,
 			[username]
 		);
 
@@ -156,16 +156,16 @@ class User {
 	static async messagesTo(username) {
 		const results = await db.query(
 			`SELECT m.id, 
-       m.from_username, 
-       u.first_name, 
-       u.last_name, 
-       u.phone, 
-       m.body, 
-       m.sent_at, 
-       m.read_at
-      FROM messages AS m
-        JOIN users AS u ON m.from_username = u.username
-      WHERE to_username=$1`,
+			m.from_username, 
+			u.first_name, 
+			u.last_name, 
+			u.phone, 
+			m.body, 
+			m.sent_at, 
+			m.read_at
+			FROM messages AS m
+				JOIN users AS u ON m.from_username = u.username
+			WHERE to_username=$1`,
 			[username]
 		);
 
