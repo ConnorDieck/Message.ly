@@ -21,9 +21,11 @@ router.post("/login", async (req, res, next) => {
 			User.updateLoginTimestamp(username);
 			let token = jwt.sign({ username }, SECRET_KEY);
 			return res.json({ token });
+		} else {
+			throw new ExpressError("Invalid username/password", 400);
 		}
 	} catch (e) {
-		next(e);
+		return next(e);
 	}
 });
 
@@ -43,7 +45,7 @@ router.post("/register", async (req, res, next) => {
 		// if (e.code === "23505") {
 		// 	return next(new ExpressError("Username taken. Please pick another!", 400));
 		// }
-		next(e);
+		return next(e);
 	}
 });
 
